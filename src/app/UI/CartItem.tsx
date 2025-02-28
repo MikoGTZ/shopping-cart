@@ -23,7 +23,7 @@ const CartItem: React.FC<CartItemProps> = ({ productId, products, quantity, remo
         <div className="flex justify-between items-center p-4 border-b">
             <div>
                 <h2 className="text-lg font-bold">{product.name}</h2>
-                <p className="text-gray-500">₱ {product.price}</p>
+                <p className="text-gray-500">₱{product.price * quantity}</p>
                 <p className="text-gray-500">Quantity: {quantity}</p>
             </div>
             <div className="flex items-center">

@@ -37,11 +37,7 @@ const reducer = (cart: any, action: any) => {
         case ACTIONS.REMOVE_FROM_CART: {
             const { id } = action.payload;
             const newCart = { ...cart };
-            if (newCart[id].quantity > 1) {
-                newCart[id].quantity -= 1;
-            } else {
-                delete newCart[id];
-            }
+            delete newCart[id];
             return newCart;
         }
         case ACTIONS.INCREMENT: {
@@ -124,7 +120,8 @@ export default function Home() {
 
     return (
         <div> 
-            <div className="flex justify-center mt-4">
+            <div className="grid-flow-col grid">
+            <div className="p-[150px] md:p-3 ">
                 <input
                     type="text"
                     placeholder="Search products..."
@@ -132,12 +129,9 @@ export default function Home() {
                     value={searchProduct}
                     onChange={(e) => setSearchProduct(e.target.value)}
                 />
-            </div>
-            <div className="grid-flow-col grid">
-            <div className="flex p-[150px]">
                 <ProductList products={filteredProducts} addToCart={addToCart} />
             </div>
-            <div className="border border-black">
+            <div className="top-0 right-0 h-full w-80 bg-white shadow-lg transition-transform transform">
                 <Cart 
                     cart={cart} 
                     removeFromCart={removeFromCart} 
