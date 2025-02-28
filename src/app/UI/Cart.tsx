@@ -19,7 +19,7 @@ interface CartProps {
 const Cart: React.FC<CartProps> = ({ cart, removeFromCart, products, increment, decrement, checkout}) => {
     return (
         <div>
-            <div className="p-4">
+            <div className="p-4 border rounded-md shadow-md">
                 <h1 className="text-center text-xl font-bold mb-4">My Cart</h1>
                 {Object.values(cart).length === 0 ? (
                     <p className='text-center'>Your cart is empty.</p>
@@ -39,6 +39,7 @@ const Cart: React.FC<CartProps> = ({ cart, removeFromCart, products, increment, 
                 {Object.values(cart).length !==0 && (
                     <button onClick={checkout}>Checkout</button>
                 )}
+            
             </div> 
         </div>
     );

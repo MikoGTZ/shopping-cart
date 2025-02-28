@@ -12,7 +12,7 @@ const initialProduct = [
     { id: 5, name: "White T-Shirt", price: 120 },
     { id: 6, name: "White Socks", price: 290 },
     { id: 7, name: "Black Blazer", price: 310 },
-    { id: 8, name: "White T-Shirt", price: 120 },
+    { id: 8, name: "Black Shoes", price: 120 },
 ];
 
 export const ACTIONS = {
@@ -131,7 +131,7 @@ export default function Home() {
                 />
                 <ProductList products={filteredProducts} addToCart={addToCart} />
             </div>
-            <div className="top-0 right-0 h-full w-80 bg-white shadow-lg transition-transform transform">
+            <div className="right-0">
                 <Cart 
                     cart={cart} 
                     removeFromCart={removeFromCart} 
