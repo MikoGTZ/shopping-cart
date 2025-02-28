@@ -1,101 +1,153 @@
-import Image from "next/image";
+'use client'
+
+import React, { useState, useEffect, useReducer } from "react";
+import ProductList from '@/app/UI/ProductList';
+import Cart from '@/app/UI/Cart';
+
+const initialProduct = [
+    { id: 1, name: "Black T-Shirt", price: 120 },
+    { id: 2, name: "Khaki Blazer", price: 290 },
+    { id: 3, name: "Navy Blue Blazer", price: 310 },
+    { id: 4, name: "White Long Sleeves", price: 200 },
+    { id: 5, name: "White T-Shirt", price: 120 },
+    { id: 6, name: "White Socks", price: 290 },
+    { id: 7, name: "Black Blazer", price: 310 },
+    { id: 8, name: "White T-Shirt", price: 120 },
+];
+
+export const ACTIONS = {
+    ADD_TO_CART: 'add-to-cart',
+    REMOVE_FROM_CART: 'remove-from-cart',
+    INCREMENT: 'increment',
+    DECREMENT: 'decrement',
+    CHECKOUT: 'checkout'
+};
+
+const reducer = (cart: any, action: any) => {
+    switch (action.type) {
+        case ACTIONS.ADD_TO_CART: {
+            const { id } = action.payload;
+            return {
+                ...cart,
+                [id]: cart[id]
+                    ? { ...cart[id], quantity: cart[id].quantity + 1 }
+                    : { ...action.payload, quantity: 1 },
+            };
+        }
+        case ACTIONS.REMOVE_FROM_CART: {
+            const { id } = action.payload;
+            const newCart = { ...cart };
+            if (newCart[id].quantity > 1) {
+                newCart[id].quantity -= 1;
+            } else {
+                delete newCart[id];
+            }
+            return newCart;
+        }
+        case ACTIONS.INCREMENT: {
+            const { productId } = action.payload;
+            const newCart = { ...cart };
+            if (newCart[productId]) {
+                newCart[productId].quantity += 1;
+            }
+            return newCart;
+        }
+        case ACTIONS.DECREMENT: {
+            const { productId } = action.payload;
+            const newCart = { ...cart };
+            if (newCart[productId]) {
+                if (newCart[productId].quantity > 1) {
+                    newCart[productId].quantity -= 1;
+                } else {
+                    delete newCart[productId];
+                }
+            }
+            return newCart;
+        }
+        case ACTIONS.CHECKOUT: {
+            console.log('Checkout successful! Cart cleared.');
+            return {}; 
+        }
+        default:
+            return cart;
+    }
+};
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    const [products] = useState(initialProduct);
+    const [searchProduct, setSearchProduct] = useState('');
+    const [cart, dispatch] = useReducer(reducer, {});
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    useEffect(() => {
+        const storedCart = localStorage.getItem('cart');
+        if (storedCart) {
+            const parsedCart = JSON.parse(storedCart);
+            if (typeof parsedCart === 'object' && parsedCart !== null) {
+                Object.values(parsedCart).forEach(item => {
+                    dispatch({ type: ACTIONS.ADD_TO_CART, payload: item });
+                });
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }, [cart]);
+
+    const addToCart = (productId: number) => {
+        const product = products.find((p) => p.id === productId);
+        if (product) {
+            dispatch({ type: ACTIONS.ADD_TO_CART, payload: product });
+        }
+    };
+
+    const removeFromCart = (productId: number) => {
+        dispatch({ type: ACTIONS.REMOVE_FROM_CART, payload: { id: productId } });
+    };
+
+    const increment = (productId: number) => {
+        dispatch({ type: ACTIONS.INCREMENT, payload: { productId } });
+    };
+
+    const decrement = (productId: number) => {
+        dispatch({ type: ACTIONS.DECREMENT, payload: { productId } });
+    };
+
+    const checkout = () => {
+        dispatch({ type: ACTIONS.CHECKOUT });
+        localStorage.clear();
+    };
+
+    const filteredProducts = products.filter(product => 
+        product.name.toLowerCase().includes(searchProduct.toLowerCase())
+    );
+
+    return (
+        <div> 
+            <div className="flex justify-center mt-4">
+                <input
+                    type="text"
+                    placeholder="Search products..."
+                    className="border border-gray-400 rounded-md px-4 py-2 w-1/2"
+                    value={searchProduct}
+                    onChange={(e) => setSearchProduct(e.target.value)}
+                />
+            </div>
+            <div className="grid-flow-col grid">
+            <div className="flex p-[150px]">
+                <ProductList products={filteredProducts} addToCart={addToCart} />
+            </div>
+            <div className="border border-black">
+                <Cart 
+                    cart={cart} 
+                    removeFromCart={removeFromCart} 
+                    products={products} 
+                    increment={increment} 
+                    decrement={decrement}
+                    checkout={checkout}
+                />
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+    );
 }
