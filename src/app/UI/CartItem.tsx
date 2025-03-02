@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useCart, ACTIONS } from '@/app/contexts/CartContext';
 
 interface Product {
     id: number;
@@ -7,42 +8,41 @@ interface Product {
 }
 
 interface CartItemProps {
-    productId: number;
-    products: Product[];
-    quantity: number;
-    removeFromCart: (id: number) => void;
-    increment: (id: number) => void; 
-    decrement: (id: number) => void; 
+    item: {
+        id: number;
+        name: string;
+        price: number;
+        quantity: number;
+    };
 }
 
-const CartItem: React.FC<CartItemProps> = ({ productId, products, quantity, removeFromCart, increment, decrement }) => {
-    const product = products.find(p => p.id === productId);
-    if (!product) return null;
+const CartItem: React.FC<CartItemProps> = ({ item }) => {
+    const { dispatch } = useCart();
 
     return (
         <div className="flex justify-between items-center p-4 border-b">
             <div>
-                <h2 className="text-lg font-bold">{product.name}</h2>
-                <p className="text-gray-500">₱{product.price * quantity}</p>
-                <p className="text-gray-500">Quantity: {quantity}</p>
+                <h2 className="text-lg font-bold">{item.name}</h2>
+                <p className="text-gray-500">₱{item.price * item.quantity}</p>
+                <p className="text-gray-500">Quantity: {item.quantity}</p>
             </div>
             <div className="flex items-center">
                 <button 
                     className="ml-4 px-3 py-1 bg-gray-300 rounded"
-                    onClick={() => decrement(productId)}
+                    onClick={() => dispatch({ type: ACTIONS.DECREMENT, payload: {id: item.id}})}
                 >
                     -
                 </button>
-                <span className="mx-2">{quantity}</span>
+                <span className="mx-2">{item.quantity}</span>
                 <button 
                     className="ml-4 px-3 py-1 bg-gray-300 rounded"
-                    onClick={() => increment(productId)}
+                    onClick={() => dispatch({ type: ACTIONS.INCREMENT, payload: {id: item.id}})}
                 >
                     +
                 </button>
                 <button 
                     className="ml-4 px-3 py-1 bg-red-500 text-white rounded"
-                    onClick={() => removeFromCart(productId)}
+                    onClick={() => dispatch({ type: ACTIONS.REMOVE_FROM_CART, payload: {id: item.id}})}
                 >
                     Remove
                 </button>

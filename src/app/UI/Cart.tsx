@@ -1,44 +1,21 @@
 import React from 'react';
-import CartItem from '@/app/UI/CartItem';
+import CartItem from '@/app/ui/CartItem';
+import { useCart, ACTIONS} from '@/app/contexts/CartContext'
 
-interface Product {
-    id: number;
-    name: string;
-    price: number;
-}
+const Cart = () => {
+    const {cart, dispatch} = useCart();
 
-interface CartProps {
-    cart: { [key: number]: { quantity: number } & Product };
-    removeFromCart: (id: number) => void;
-    increment: (id: number) => void;
-    decrement: (id: number) => void;
-    checkout: () => void;
-    products: Product[];
-}
+    const totalPrice = cart.reduce((total: number, item: any) => total + item.price * item.quantity, 0);
 
-const Cart: React.FC<CartProps> = ({ cart, removeFromCart, products, increment, decrement, checkout}) => {
     return (
         <div>
             <div className="p-4 border rounded-md shadow-md">
                 <h1 className="text-center text-xl font-bold mb-4">My Cart</h1>
-                {Object.values(cart).length === 0 ? (
-                    <p className='text-center'>Your cart is empty.</p>
-                ) : (
-                    Object.values(cart).map((item, index) => (
-                            <CartItem
-                                key={item.id} 
-                                productId={item.id}
-                                quantity={item.quantity}
-                                products={products}
-                                removeFromCart={removeFromCart}
-                                increment={increment}
-                                decrement={decrement}
-                            />
-                        ))
-                )}
-                {Object.values(cart).length !==0 && (
-                    <button onClick={checkout}>Checkout</button>
-                )}
+                {cart.length === 0 
+                ? <p>Your cart is empty.</p> 
+                : cart.map((item: any) => <CartItem key={item.id} item={item} />)}
+                <h3>Total: ${totalPrice}</h3>
+                <button onClick={() => dispatch({ type: ACTIONS.CHECKOUT })}>Checkout</button>
             
             </div> 
         </div>
