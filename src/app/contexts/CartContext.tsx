@@ -18,7 +18,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         const storedCart = localStorage.getItem('cart');
         if (storedCart) {
             const parsedCart = JSON.parse(storedCart);
-            if (parsedCart === 'object' && parsedCart !== null) {
+            if (typeof parsedCart === 'object' && parsedCart !== null) {
                 Object.values(parsedCart).forEach(item => {
                     dispatch({ type: ACTIONS.ADD_TO_CART, payload: item });
                 });
@@ -84,7 +84,7 @@ export const ACTIONS = {
 
 const cartReducer = (cart: CartItemType[], action: any): CartItemType[] => {
     switch (action.type) {
-        case ACTIONS.ADD_TO_CART: {
+        case ACTIONS.ADD_TO_CART: 
             const { id } = action.payload;
             const existingItem = cart.find((item) => item.id === id);
 
@@ -95,25 +95,25 @@ const cartReducer = (cart: CartItemType[], action: any): CartItemType[] => {
             } else {
                 return [...cart, { ...action.payload, quantity: 1 }];
             }
-        }
+        
 
-        case ACTIONS.REMOVE_FROM_CART: {
+        case ACTIONS.REMOVE_FROM_CART: 
             return cart.filter((item) => item.id !== action.payload.id);
-        }
+        
 
-        case ACTIONS.INCREMENT: {
+        case ACTIONS.INCREMENT: 
             return cart.map((item) =>
                 item.id === action.payload.id ? { ...item, quantity: item.quantity + 1 } : item
             );
-        }
+        
 
-        case ACTIONS.DECREMENT: {
+        case ACTIONS.DECREMENT: 
             return cart
                 .map((item) =>
                     item.id === action.payload.id ? { ...item, quantity: item.quantity - 1 } : item
                 )
                 .filter((item) => item.quantity > 0);
-        }
+        
 
         case ACTIONS.CHECKOUT:
             return []; 
