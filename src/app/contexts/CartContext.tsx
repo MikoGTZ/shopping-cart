@@ -24,7 +24,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     const addToCart = (productId: number) => {
         const product = initialProducts.find((p) => p.id === productId);
         if (product) {
-            dispatch({ type: ACTIONS.ADD_TO_CART, payload: product });
+            dispatch({ type: ACTIONS.ADD_TO_CART, payload: { productId } });
         }
     };
 
@@ -76,12 +76,11 @@ export const ACTIONS = {
 const cartReducer = (cart: CartItemType[], action: any): CartItemType[] => {
     switch (action.type) {
         case ACTIONS.ADD_TO_CART: 
-            const { id } = action.payload;
-            const existingItem = cart.find((item) => item.id === id);
+            const existingItem = cart.find((item) => item.id === action.payload.id);
 
             if (existingItem) {
                 return cart.map((item) =>
-                    item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+                    item.id === action.payload.id ? { ...item, quantity: item.quantity + 1 } : item
                 );
             } else {
                 return [...cart, { ...action.payload, quantity: 1 }];
@@ -89,19 +88,18 @@ const cartReducer = (cart: CartItemType[], action: any): CartItemType[] => {
 
         case ACTIONS.REMOVE_FROM_CART: 
             return cart.filter((item) => item.id !== action.payload.id);
-        
 
         case ACTIONS.INCREMENT: 
             return cart.map((item) =>
                 item.id === action.payload.id ? { ...item, quantity: item.quantity + 1 } : item
             );
-        
         case ACTIONS.DECREMENT: 
             return cart
                 .map((item) =>
                     item.id === action.payload.id ? { ...item, quantity: item.quantity - 1 } : item
                 )
                 .filter((item) => item.quantity > 0);
+        
     
         case ACTIONS.CHECKOUT:
             return []; 

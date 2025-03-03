@@ -12,7 +12,7 @@ interface ProductListProps {
 }
 
 const ProductList: React.FC<ProductListProps> = ({products}) => {
-  const { cart, dispatch } = useCart();
+  const { dispatch } = useCart();
   
   return (
     <div>
