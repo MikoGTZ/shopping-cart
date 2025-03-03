@@ -77,7 +77,6 @@ const cartReducer = (cart: CartItemType[], action: any): CartItemType[] => {
     switch (action.type) {
         case ACTIONS.ADD_TO_CART: 
             const existingItem = cart.find((item) => item.id === action.payload.id);
-
             if (existingItem) {
                 return cart.map((item) =>
                     item.id === action.payload.id ? { ...item, quantity: item.quantity + 1 } : item
