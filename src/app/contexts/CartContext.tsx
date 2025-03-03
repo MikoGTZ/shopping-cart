@@ -12,19 +12,10 @@ interface CartItemType {
 const CartContext = createContext<any>(null);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-    const [cart, dispatch] = useReducer(cartReducer, []);
-
-    useEffect(() => {
+    const [cart, dispatch] = useReducer(cartReducer, [], () => {
         const storedCart = localStorage.getItem('cart');
-        if (storedCart) {
-            const parsedCart = JSON.parse(storedCart);
-            if (typeof parsedCart === 'object' && parsedCart !== null) {
-                Object.values(parsedCart).map(item => {
-                    dispatch({ type: ACTIONS.ADD_TO_CART, payload: item });
-                });
-            }
-        }
-    }, []);
+        return storedCart ? JSON.parse(storedCart) : [];
+    });
 
     useEffect(() => {
         localStorage.setItem('cart', JSON.stringify(cart));
@@ -38,7 +29,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const removeFromCart = (productId: number) => {
-        dispatch({ type: ACTIONS.REMOVE_FROM_CART, payload: { id: productId } });
+        dispatch({ type: ACTIONS.REMOVE_FROM_CART, payload: { productId } });
     };
 
     const increment = (productId: number) => {
