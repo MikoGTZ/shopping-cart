@@ -1,6 +1,9 @@
 'use client'
 
+import {ConvexProvider, ConvexReactClient, useQuery} from 'convex/react';
 import React, { createContext, useReducer, useEffect, ReactNode, useContext } from 'react';
+
+const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 interface CartItemType {
     id: number;
@@ -56,11 +59,13 @@ const cartReducer = (cart: CartItemType[], action: any): CartItemType[] => {
 
 const CartContext = createContext<any>(null);
 
-export const CartProvider = ({ children }: { children: ReactNode }) => {
-    const [cart, dispatch] = useReducer(cartReducer, [], () => {
-        const storedCart = localStorage.getItem('cart');
-        return storedCart ? JSON.parse(storedCart) : [];
-    });
+export const ConvexCartProvider = ({ children }: { children: ReactNode }) => {
+    // const [cart, dispatch] = useReducer(cartReducer, [], () => {
+    //     const storedCart = localStorage.getItem('cart');
+    //     return storedCart ? JSON.parse(storedCart) : [];
+    // });
+
+    const [cart, dispatch] = useReducer(cartReducer, []);
 
     useEffect(() => {
         localStorage.setItem('cart', JSON.stringify(cart));
@@ -91,9 +96,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <CartContext.Provider value={{cart, dispatch}}>
-                {children}      
-        </CartContext.Provider>
+        <ConvexProvider client={convex}>
+            <CartContext.Provider value={{cart, dispatch}}>
+                    {children}      
+            </CartContext.Provider>
+        </ConvexProvider>
     );
 
 };

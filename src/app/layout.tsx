@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/app/ui/NavBar";
-import { CartProvider } from "@/app/contexts/CartContext";
+import { ConvexCartProvider } from "@/app/contexts/CartContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,9 +30,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NavBar />
-        <CartProvider>
+        <ConvexCartProvider>
           {children}
-        </CartProvider>
+        </ConvexCartProvider>
         
       </body>
     </html>

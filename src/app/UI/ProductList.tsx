@@ -1,4 +1,6 @@
 import React from 'react'
+import { useMutation } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
 import { useCart, ACTIONS } from '@/app/contexts/CartContext';
 import { supabase } from '@/app/lib/supabase'
 
@@ -6,7 +8,7 @@ interface Product {
     id: number;
     name: string;
     price: number;
-    quantity: number;
+    // quantity: number;
 }
 
 interface ProductListProps {
@@ -15,47 +17,58 @@ interface ProductListProps {
 
 const ProductList: React.FC<ProductListProps> = ({products}) => {
   const { dispatch } = useCart();
+  const addToCartMutation = useMutation(api.cart.addToCart);
 
   const addToCart = async (product: Product) => {
-    dispatch({ type: ACTIONS.ADD_TO_CART, payload: product })
+    dispatch({ type: ACTIONS.ADD_TO_CART,  payload: product});
 
-    const { data, error } = await supabase
-      .from('cart')
-      .select('*')
-      .eq('id', product.id);
-      
-    console.log('Supabase response:', { data, error });
-      
-      
-    if (data && data.length > 0) {
-      const existingItem = data[0];
-      console.log('Updating existing item:', existingItem);
-        
-      const { error: updateError } = await supabase
-        .from('cart')
-        .update({ quantity: existingItem.quantity + 1 })
-        .eq('id', existingItem.id);
-        
-       if (updateError) {
-        console.error('Error updating cart:', updateError);
-      }
-    } else {
-      console.log('Adding new item to cart');
-        
-      const { error: insertError } = await supabase
-        .from('cart')
-        .insert({
-          id: product.id,  
-          name: product.name, 
-          price: product.price, 
-          quantity: 1
-        });
-        
-      if (insertError) {
-        console.error('Error inserting to cart:', insertError);
-      }
-    }
+    await addToCartMutation({
+      productId: product.id,
+      name: product.name,
+      price: product.price
+    })
   }
+
+  // const addToCart = async (product: Product) => {
+  //   dispatch({ type: ACTIONS.ADD_TO_CART, payload: product })
+
+  //   const { data, error } = await supabase
+  //     .from('cart')
+  //     .select('*')
+  //     .eq('id', product.id);
+      
+  //   console.log('Supabase response:', { data, error });
+      
+      
+  //   if (data && data.length > 0) {
+  //     const existingItem = data[0];
+  //     console.log('Updating existing item:', existingItem);
+        
+  //     const { error: updateError } = await supabase
+  //       .from('cart')
+  //       .update({ quantity: existingItem.quantity + 1 })
+  //       .eq('id', existingItem.id);
+        
+  //      if (updateError) {
+  //       console.error('Error updating cart:', updateError);
+  //     }
+  //   } else {
+  //     console.log('Adding new item to cart');
+        
+  //     const { error: insertError } = await supabase
+  //       .from('cart')
+  //       .insert({
+  //         id: product.id,  
+  //         name: product.name, 
+  //         price: product.price, 
+  //         quantity: 1
+  //       });
+        
+  //     if (insertError) {
+  //       console.error('Error inserting to cart:', insertError);
+  //     }
+  //   }
+  // }
   
   return (
     <div>

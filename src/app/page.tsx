@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useReducer, useContext } from "react";
 import ProductList from '@/app/ui/ProductList';
 import Cart from '@/app/ui/Cart';
-import { initialProducts, CartProvider, useCart} from "@/app/contexts/CartContext";
+import { initialProducts, ConvexCartProvider, useCart} from "@/app/contexts/CartContext";
 
 export default function Home() {
     const [searchProduct, setSearchProduct] = useState('');
@@ -13,7 +13,7 @@ export default function Home() {
     );
 
     return ( 
-        <CartProvider>
+        <ConvexCartProvider>
             <div> 
                 <div className="grid-flow-col grid">
                 <div className="p-[150px] md:p-3 ">
@@ -32,6 +32,6 @@ export default function Home() {
             
             </div>
             </div>
-        </CartProvider>
+        </ConvexCartProvider>
     );
 }
