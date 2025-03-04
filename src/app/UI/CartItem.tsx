@@ -19,6 +19,10 @@ interface CartItemProps {
 const CartItem: React.FC<CartItemProps> = ({ item }) => {
     const { dispatch } = useCart();
 
+    const decrement = async () => {
+        dispatch({ type: ACTIONS.DECREMENT})
+    }
+
     return (
         <div className="flex justify-between items-center p-4 border-b">
             <div>

@@ -7,6 +7,12 @@ const Cart = () => {
 
     const totalPrice = cart.reduce((total: number, item: any) => total + item.price * item.quantity, 0);
 
+    const checkout = () => {
+        dispatch({ type: ACTIONS.CHECKOUT });
+
+        
+    }
+
     return (
         <div>
             <div className="p-4 border rounded-md shadow-md">
@@ -15,7 +21,7 @@ const Cart = () => {
                 ? <p>Your cart is empty.</p> 
                 : cart.map((item: any) => <CartItem key={item.id} item={item} />)}
                 <h3>Total: ${totalPrice}</h3>
-                <button onClick={() => dispatch({ type: ACTIONS.CHECKOUT })}>Checkout</button>
+                <button onClick={checkout}>Checkout</button>
             
             </div> 
         </div>
