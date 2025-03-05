@@ -3,7 +3,7 @@
 import React, {useState} from 'react'
 import { useRouter } from 'next/navigation'
 import { useMutation, useQuery } from 'convex/react'
-import { api } from '../../convex/_generated/api'
+import { api } from '../../../convex/_generated/api'
 
 const Login = () => {
     const [login, setLogin] = useState({
@@ -26,7 +26,7 @@ const Login = () => {
         })
 
         if (user) {
-            router.push('/shopping-cart')
+            router.push('/')
             localStorage.setItem("userId", user._id);
             console.log("Login response:", user);
         } else {

@@ -28,7 +28,7 @@ const ProductList = () => {
     );
 
   const addToCart = async (product: Product) => {
-    // dispatch({ type: ACTIONS.ADD_TO_CART,  payload: product});
+    dispatch({ type: ACTIONS.ADD_TO_CART,  payload: product});
 
     await addToCartMutation({
       productId: product.productId,

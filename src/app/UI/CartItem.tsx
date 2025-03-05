@@ -3,9 +3,14 @@ import { useCart, ACTIONS } from '@/app/contexts/CartContext';
 import { useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 
+interface Product {
+    id: number;
+    name: string;
+    price: number;
+}
+
 interface CartItemProps {
     item: {
-        _id: string;
         productId: number;
         name: string;
         price: number;
