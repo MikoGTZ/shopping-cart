@@ -1,29 +1,37 @@
-import React from 'react'
-import { useMutation } from 'convex/react';
+import React, {useState} from 'react'
+import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 import { useCart, ACTIONS } from '@/app/contexts/CartContext';
 import { supabase } from '@/app/lib/supabase'
 
 interface Product {
-    id: number;
+    _id: string;
+    productId: number;
     name: string;
     price: number;
-    // quantity: number;
+  
 }
 
 interface ProductListProps {
     products: Product[];
 }
 
-const ProductList: React.FC<ProductListProps> = ({products}) => {
+const ProductList = () => {
   const { dispatch } = useCart();
+  const products = useQuery(api.product.getProducts) || [];
   const addToCartMutation = useMutation(api.cart.addToCart);
 
+   const [searchProduct, setSearchProduct] = useState('');
+  
+    const filteredProducts = products.filter(product => 
+        product.name.toLowerCase().includes(searchProduct.toLowerCase())
+    );
+
   const addToCart = async (product: Product) => {
-    dispatch({ type: ACTIONS.ADD_TO_CART,  payload: product});
+    // dispatch({ type: ACTIONS.ADD_TO_CART,  payload: product});
 
     await addToCartMutation({
-      productId: product.id,
+      productId: product.productId,
       name: product.name,
       price: product.price
     })
@@ -72,10 +80,17 @@ const ProductList: React.FC<ProductListProps> = ({products}) => {
   
   return (
     <div>
+      <input
+        type="text"
+        placeholder="Search products..."
+        className="border border-gray-400 rounded-md px-4 py-2 w-1/2"
+        value={searchProduct}
+        onChange={(e) => setSearchProduct(e.target.value)}
+      />
       <div className='grid grid-row-5'>
         <div className='grid grid-cols-2 md:grid-cols-5'>
-            {products.map((product) => 
-                <div key={product.id} className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 ml-6 mt-4">
+            {filteredProducts.map((product) => 
+                <div key={product.productId} className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 ml-6 mt-4">
                     <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{product.name}</h5>
                     <p>₱{product.price}</p>
                     <button onClick={() => addToCart(product)} className='text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>

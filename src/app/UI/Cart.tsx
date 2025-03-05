@@ -14,7 +14,7 @@ const Cart = () => {
     const totalPrice = cart.reduce((total: number, item: any) => total + item.price * item.quantity, 0);
 
     const checkout = async () => {
-        dispatch({ type: ACTIONS.CHECKOUT});
+        // dispatch({ type: ACTIONS.CHECKOUT});
 
         await checkoutMutation();
     }

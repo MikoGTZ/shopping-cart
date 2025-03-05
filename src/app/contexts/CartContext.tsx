@@ -60,12 +60,12 @@ const cartReducer = (cart: CartItemType[], action: any): CartItemType[] => {
 const CartContext = createContext<any>(null);
 
 export const ConvexCartProvider = ({ children }: { children: ReactNode }) => {
-    // const [cart, dispatch] = useReducer(cartReducer, [], () => {
-    //     const storedCart = localStorage.getItem('cart');
-    //     return storedCart ? JSON.parse(storedCart) : [];
-    // });
+    const [cart, dispatch] = useReducer(cartReducer, [], () => {
+        const storedCart = localStorage.getItem('cart');
+        return storedCart ? JSON.parse(storedCart) : [];
+    });
 
-    const [cart, dispatch] = useReducer(cartReducer, []);
+    // const [cart, dispatch] = useReducer(cartReducer, []);
 
     useEffect(() => {
         localStorage.setItem('cart', JSON.stringify(cart));
