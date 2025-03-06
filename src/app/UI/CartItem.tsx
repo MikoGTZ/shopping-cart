@@ -5,7 +5,7 @@ import { api } from '../../../convex/_generated/api';
 
 interface CartItemProps {
     item: {
-        _id: string;
+        id: string;
         productId: number;
         name: string;
         price: number;
@@ -15,34 +15,6 @@ interface CartItemProps {
 
 const CartItem: React.FC<CartItemProps> = ({ item }) => {
     const { dispatch } = useCart();
-
-    const incrementMutation = useMutation(api.cart.increment);
-    const decrementMutation = useMutation(api.cart.decrement);
-    const removeFromCartMutation = useMutation(api.cart.removeFromCart);
-
-    const decrement = async () => {
-        // dispatch({ type: ACTIONS.DECREMENT, payload: {id: item.productId}})
-
-        await decrementMutation({
-            productId: item.productId
-        })
-    }
-
-    const increment = async () => {
-        // dispatch({ type: ACTIONS.INCREMENT, payload: {id: item.productId}})
-
-        await incrementMutation({
-            productId: item.productId
-        })
-    }
-
-    const removeFromCart = async () => {
-        // dispatch({ type: ACTIONS.REMOVE_FROM_CART, payload:  {id: item.productId}})
-
-        await removeFromCartMutation({
-            productId: item.productId
-        })
-    }
 
     return (
         <div className="flex justify-between items-center p-4 border-b">
@@ -54,20 +26,20 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
             <div className="flex items-center">
                 <button 
                     className="ml-4 px-3 py-1 bg-gray-300 rounded"
-                    onClick={decrement}
+                    onClick={() => dispatch({ type: ACTIONS.DECREMENT, payload: {id: item.id}})}
                 >
                     -
                 </button>
                 <span className="mx-2">{item.quantity}</span>
                 <button 
                     className="ml-4 px-3 py-1 bg-gray-300 rounded"
-                    onClick={increment}
+                    onClick={() => dispatch({ type: ACTIONS.INCREMENT, payload: {id: item.id}})}
                 >
                     +
                 </button>
                 <button 
                     className="ml-4 px-3 py-1 bg-red-500 text-white rounded"
-                    onClick={removeFromCart}
+                    onClick={() => dispatch({ type: ACTIONS.REMOVE_FROM_CART, payload: {id: item.id}})}
                 >
                     Remove
                 </button>
