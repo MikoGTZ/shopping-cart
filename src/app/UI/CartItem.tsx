@@ -1,13 +1,6 @@
 import React, { useContext } from 'react';
-import { useCart, ACTIONS } from '@/app/contexts/CartContext';
 import { useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
-
-interface Product {
-    id: number;
-    name: string;
-    price: number;
-}
 
 interface CartItemProps {
     item: {
@@ -16,35 +9,31 @@ interface CartItemProps {
         price: number;
         quantity: number;
     };
+    userId: string;
 }
 
-const CartItem: React.FC<CartItemProps> = ({ item }) => {
-    const { dispatch } = useCart();
-
+const CartItem: React.FC<CartItemProps> = ({ item, userId }) => {
     const incrementMutation = useMutation(api.cart.increment);
     const decrementMutation = useMutation(api.cart.decrement);
     const removeFromCartMutation = useMutation(api.cart.removeFromCart);
 
     const decrement = async () => {
-        // dispatch({ type: ACTIONS.DECREMENT, payload: {id: item.productId}})
-
         await decrementMutation({
+            userId,
             productId: item.productId
         })
     }
 
     const increment = async () => {
-        // dispatch({ type: ACTIONS.INCREMENT, payload: {id: item.productId}})
-
         await incrementMutation({
+            userId,
             productId: item.productId
         })
     }
 
     const removeFromCart = async () => {
-        // dispatch({ type: ACTIONS.REMOVE_FROM_CART, payload:  {id: item.productId}})
-
         await removeFromCartMutation({
+            userId,
             productId: item.productId
         })
     }

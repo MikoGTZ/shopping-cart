@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 function Navbar() {
   return (
-    <nav className="bg-gray-800 border-gray-200 dark:bg-gray-900 shadow-lg text-white">
+    <nav className="bg-gray-800 border-gray-200 dark:bg-gray-900 shadow-lg text-white w-full">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4">
             <a href="/shopping-cart" className="flex items-center space-x-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6"> 

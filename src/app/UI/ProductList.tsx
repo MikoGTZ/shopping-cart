@@ -1,8 +1,8 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
-import { useCart, ACTIONS } from '@/app/contexts/CartContext';
 import { supabase } from '@/app/lib/supabase'
+import { useRouter } from 'next/navigation';
 
 interface Product {
     _id: string;
@@ -12,25 +12,31 @@ interface Product {
   
 }
 
-interface ProductListProps {
-    products: Product[];
-}
-
 const ProductList = () => {
-  const { dispatch } = useCart();
+  const [userId, setUserId] = useState('');
   const products = useQuery(api.product.getProducts) || [];
   const addToCartMutation = useMutation(api.cart.addToCart);
+  const router = useRouter();
 
-   const [searchProduct, setSearchProduct] = useState('');
+  const [searchProduct, setSearchProduct] = useState('');
   
-    const filteredProducts = products.filter(product => 
-        product.name.toLowerCase().includes(searchProduct.toLowerCase())
-    );
+  const filteredProducts = products.filter(product => 
+    product.name.toLowerCase().includes(searchProduct.toLowerCase())
+  );
+
+   useEffect(() => {
+          const storedUserId = localStorage.getItem('userId');
+          if (!storedUserId) {
+              router.push('/');
+          } else {
+            setUserId(storedUserId);
+          }
+      }, [router]);
+  
 
   const addToCart = async (product: Product) => {
-    dispatch({ type: ACTIONS.ADD_TO_CART,  payload: product});
-
     await addToCartMutation({
+      userId,
       productId: product.productId,
       name: product.name,
       price: product.price

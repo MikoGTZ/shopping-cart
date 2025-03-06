@@ -9,7 +9,8 @@ const Login = () => {
     const [login, setLogin] = useState({
         email: '',
         password: ''
-    })
+    });
+    
     const loginMutation = useMutation(api.user.login) || [];
     const router = useRouter();
 
