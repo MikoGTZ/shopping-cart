@@ -65,7 +65,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
                 </button>
                 <span className="mx-2">{item.quantity}</span>
                 <button 
-                    className="ml-4 px-3 py-1 bg-gray-300 rounded"
+                    className="ml-1 px-3 py-1 bg-gray-300 rounded"
                     onClick={increment}
                 >
                     +

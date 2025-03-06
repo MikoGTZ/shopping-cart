@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import {ConvexProvider, ConvexReactClient, useQuery} from 'convex/react';
 import React, { createContext, useReducer, useEffect, ReactNode, useContext } from 'react';
+import { ConvexProvider, ConvexReactClient } from 'convex/react';
 
 const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
@@ -47,7 +47,6 @@ const cartReducer = (cart: CartItemType[], action: any): CartItemType[] => {
                     item.id === action.payload.id ? { ...item, quantity: item.quantity - 1 } : item
                 )
                 .filter((item) => item.quantity > 0);
-        
     
         case ACTIONS.CHECKOUT:
             return []; 
@@ -57,14 +56,19 @@ const cartReducer = (cart: CartItemType[], action: any): CartItemType[] => {
     }
 };
 
-const CartContext = createContext<any>(null);
+interface CartContextType {
+    cart: CartItemType[];
+    dispatch: React.Dispatch<any>;
+    addToCart: (productId: number) => void;
+    removeFromCart: (productId: number) => void;
+    increment: (productId: number) => void;
+    decrement: (productId: number) => void;
+    checkout: () => void;
+}
+
+const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-    // const [cart, dispatch] = useReducer(cartReducer, [], () => {
-    //     const storedCart = localStorage.getItem('cart');
-    //     return storedCart ? JSON.parse(storedCart) : [];
-    // });
-
     const [cart, dispatch] = useReducer(cartReducer, []);
 
     useEffect(() => {
@@ -74,35 +78,42 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     const addToCart = (productId: number) => {
         const product = initialProducts.find((p) => p.id === productId);
         if (product) {
-            dispatch({ type: ACTIONS.ADD_TO_CART, payload: {...product, productId } });
+            dispatch({ type: ACTIONS.ADD_TO_CART, payload: {...product, id: productId } });
         }
     };
 
     const removeFromCart = (productId: number) => {
-        dispatch({ type: ACTIONS.REMOVE_FROM_CART, payload: { productId } });
+        dispatch({ type: ACTIONS.REMOVE_FROM_CART, payload: { id: productId } });
     };
 
     const increment = (productId: number) => {
-        dispatch({ type: ACTIONS.INCREMENT, payload: { productId } });
+        dispatch({ type: ACTIONS.INCREMENT, payload: { id: productId } });
     };
 
     const decrement = (productId: number) => {
-        dispatch({ type: ACTIONS.DECREMENT, payload: { productId } });
+        dispatch({ type: ACTIONS.DECREMENT, payload: { id: productId } });
     };
 
     const checkout = () => {
         dispatch({ type: ACTIONS.CHECKOUT });
-        localStorage.clear();
+        localStorage.removeItem('cart');
     };
 
     return (
         <ConvexProvider client={convex}>
-            <CartContext.Provider value={{cart, dispatch}}>
-                    {children}      
+            <CartContext.Provider value={{
+                cart, 
+                dispatch, 
+                addToCart, 
+                removeFromCart, 
+                increment, 
+                decrement, 
+                checkout
+            }}>
+                {children}      
             </CartContext.Provider>
         </ConvexProvider>
     );
-
 };
 
 export const initialProducts = [
@@ -116,4 +127,10 @@ export const initialProducts = [
     { id: 8, name: "Black Shoes", price: 120 },
 ];
 
-export const useCart = () => useContext(CartContext);
+export const useCart = () => {
+    const context = useContext(CartContext);
+    if (context === undefined) {
+        throw new Error('useCart must be used within a CartProvider');
+    }
+    return context;
+};

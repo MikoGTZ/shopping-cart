@@ -26,9 +26,8 @@ const Cart = () => {
                 {cart.length === 0 
                 ? <p>Your cart is empty.</p> 
                 : cart.map((item: any) => <CartItem key={item._id} item={item} />)}
-                <h3>Total: ${totalPrice}</h3>
-                <button onClick={checkout}>Checkout</button>
-            
+                <h3 className='font-semibold mt-2'>Total: ₱ {totalPrice}</h3>
+                <button onClick={checkout} className='bg-blue-700 rounded text-white px-4 py-2'>Checkout</button>
             </div> 
         </div>
     );

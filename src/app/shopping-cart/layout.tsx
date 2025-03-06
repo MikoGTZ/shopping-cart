@@ -6,9 +6,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="">        
                 <NavBar />
             <div className="flex-grow p-6 md:overflow-y-auto md:p-12">
-                <CartProvider>
                     {children}
-                </CartProvider>
             </div>
         </div>
     )

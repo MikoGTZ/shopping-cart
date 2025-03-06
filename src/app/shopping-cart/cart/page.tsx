@@ -1,11 +1,12 @@
+'use client'
+
+import Cart from '@/app/ui/Cart'
 import React from 'react'
 
-const page = () => {
+export default function page() {
   return (
     <div>
-      
+      <Cart />
     </div>
   )
 }
-
-export default page
