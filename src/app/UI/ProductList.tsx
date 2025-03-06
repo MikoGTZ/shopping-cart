@@ -71,12 +71,12 @@ const ProductList = () => {
       <input
         type="text"
         placeholder="Search products..."
-        className="border border-gray-400 rounded-md px-4 py-2 w-1/4 ml-4"
+        className="border border-gray-400 rounded-md px-4 py-2 md:w-1/4 ml-6"
         value={searchProduct}
         onChange={(e) => setSearchProduct(e.target.value)}
       />
       <div className='grid grid-row-5'>
-        <div className='grid grid-cols-2 md:grid-cols-5'>
+        <div className='grid grid-cols-1 md:grid-cols-5'>
             {filteredProducts.map((product) => 
                 <div key={product.id} className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 ml-6 mt-4">
                     <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{product.name}</h5>

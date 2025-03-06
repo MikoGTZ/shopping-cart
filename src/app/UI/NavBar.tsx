@@ -2,7 +2,7 @@ import React from 'react'
 
 function Navbar() {
   return (
-    <nav className="bg-gray-800 border-gray-200 dark:bg-gray-900 shadow-lg text-white">
+    <nav className="bg-gray-800 border-gray-200 dark:bg-gray-900 shadow-lg text-white w-[430px] md:w-full">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4">
             <a href="/">
                 <h1>Cartito</h1>
